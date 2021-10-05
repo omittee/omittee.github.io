@@ -42,3 +42,14 @@
 	- location navigator history对象
 
 22:00以后：整理、上传代码  
+## Day 5  
+8:00-11:30：项目s9部分+项目s10部分  
+11:30-14:00：吃饭休息刷B站  
+14:00-17:30：项目footer部分+debug(一个bug改半天系列)  
+17:30-19:00：吃饭+处理个人事务  
+19:00-22:30：看教程  
++ 学习内容：  
+	- offset、client、scroll系列  
+	- mouseover与mouseseenter区别  
+
+22:30以后：整理、上传代码  
