@@ -1,5 +1,4 @@
 #include <iostream>
-
 #define LEN 10
 using namespace std;
 //直接插入排序
@@ -123,6 +122,7 @@ void Q_sort(int a[],int begin,int end){
 }
 
 //归并排序
+/*最坏时间复杂度：O(nlogn)	空间复杂度O(n) 	稳定*/
 void M_sort(int a[],int n){
 	int b[n];
 	for(int unit=1;unit<n;unit*=2){
@@ -149,12 +149,68 @@ void M_sort(int a[],int n){
 	}
 }
 
+
+
+//链表类
+class list{
+public:
+	int value;//值
+	int next;//下一个索引号
+};
+//表插入排序
+/*最坏时间复杂度：O(n^2)	空间复杂度O(n) 	稳定*/
+void L_sort(int n){
+	list arr[n+1];//构建数组
+	int i;
+	arr[0].value=n;
+	arr[0].next=1;
+	arr[1].next=-1;
+	for(i=1;i<=n;i++){
+		cin>>arr[i].value;//输入数值后就参与排序
+		for(int s=0,fore;s!=-1;fore=s/*记录索引号*/,s=arr[s].next/*更新后面的索引号*/){
+			if(s>0&&arr[s].value>arr[i].value){
+				arr[i].next=arr[fore].next;//把前一个的next指向插入的next
+				arr[fore].next=i;//把插入的索引号赋值给前一个的next
+				break;
+			}
+			else if(arr[s].next==-1){
+				arr[s].next=i;
+				arr[i].next=-1;
+			}
+		}
+	}
+	
+	for(int s=0;s!=-1;s=arr[s].next){
+		if(s!=0){
+			cout<<arr[s].value<<" ";
+		}
+	}
+}
+
+
+//堆排序
+//void D_sort(int a[],int n){
+//	for( int i=n-1,s;i>=0;i=s ){
+//		s=(i-2+i%2)/2;
+//		if( a[i]>a[s] ){
+//			int temp=a[i];
+//			a[i]=a[s];
+//			a[s]=temp;
+//		}
+//	}
+//}
+
+
+
+
 int main(){
 
-	int arr[LEN];
+/*	int arr[LEN];
 	for(int i=0;i<LEN;i++){
 		cin>>arr[i];
-	}
+	}	*/
+	
+	
 	//直接插入排序
 //	SI_sort(arr,LEN);
 	
@@ -172,9 +228,15 @@ int main(){
 //	Q_sort(arr,0,LEN);
 
 	//归并排序
-	M_sort(arr,LEN);
-	for(int i=0;i<LEN;i++){
+//	M_sort(arr,LEN);
+
+/*	for(int i=0;i<LEN;i++){
 		cout<<arr[i]<<" ";
-	}
+	}	*/
+
+	//表插入排序
+//	L_sort(LEN);
+
+
 	return 0;
 }
