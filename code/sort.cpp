@@ -189,26 +189,50 @@ void L_sort(int n){
 
 
 //堆排序
-//void D_sort(int a[],int n){
-//	for( int i=n-1,s;i>=0;i=s ){
-//		s=(i-2+i%2)/2;
-//		if( a[i]>a[s] ){
-//			int temp=a[i];
-//			a[i]=a[s];
-//			a[s]=temp;
-//		}
-//	}
-//}
+/*最坏时间复杂度：O(nlogn)	空间复杂度O(1) 	不稳定*/
+void do_Dswap(int a[],int start,int end){
+	int father=start;
+	int son=start*2+1;
+	int temp;
+	while(son<=end){
+		if(son<end-1&&a[son]<a[son+1]){//找到大的子代
+			son++;
+		}
+		if(a[son]<a[father]){
+			return;
+		}
+		else{
+			temp=a[son];
+			a[son]=a[father];
+			a[father]=temp;
+			father=son;//交换后继续将大的子代往上交换提升
+			son=son*2+1;
+		}
+	}
+}
+void D_sort(int a[],int n){
+	for(int i=n/2-1;i>=0;i--){
+		do_Dswap(a,i,n-1);//初始化，把大的往上交换提升，直到顶部
+	}
+	for(int i=n-1,temp;i>0;i--){
+		if(a[0]>a[i]){
+			temp=a[i];
+			a[i]=a[0];
+			a[0]=temp;//顶部与底部最后值交换
+		}
+		do_Dswap(a,0,i-1);//从上往下把大的往上交换提升，底部最后值退出交换
+	}
+}
 
 
 
 
 int main(){
 
-/*	int arr[LEN];
+	int arr[LEN];
 	for(int i=0;i<LEN;i++){
 		cin>>arr[i];
-	}	*/
+	}	
 	
 	
 	//直接插入排序
@@ -230,13 +254,16 @@ int main(){
 	//归并排序
 //	M_sort(arr,LEN);
 
-/*	for(int i=0;i<LEN;i++){
+	//堆排序
+//	D_sort(arr,LEN);
+
+	
+	for(int i=0;i<LEN;i++){
 		cout<<arr[i]<<" ";
-	}	*/
+	}
 
 	//表插入排序
 //	L_sort(LEN);
-
 
 	return 0;
 }
