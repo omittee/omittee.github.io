@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 #define LEN 10
 using namespace std;
 //直接插入排序
@@ -265,5 +266,6 @@ int main(){
 	//表插入排序
 //	L_sort(LEN);
 
+	system("pause");
 	return 0;
 }

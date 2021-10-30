@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdlib>
 #include <vector>
 #include <queue>
 #include <stack>
@@ -328,6 +329,6 @@ int main(){
 
 //DFS
 //	DFS(&a[0]);
-  system("pause");
+  	system("pause");
 	return 0;
 }
