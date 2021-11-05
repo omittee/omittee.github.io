@@ -15,34 +15,6 @@ body{
   border-radius: 50%;
   /* transition: 2s; */
 }
-/* #id0{
-  left: 301px;
-  top: 147px;
-}
-#id1{
-  left: 192px;
-  top: 238px;
-}
-#id2{
-  left: 410px;
-  top: 238px;
-}
-#id3{
-  left: 138px;
-  top: 327px;
-}
-#id4{
-  left: 246px;
-  top: 327px;
-}
-#id5{
-  left: 355px;
-  top: 327px;
-}
-#id6{
-  left: 464px;
-  top: 327px;
-} */
 
 .fake{
   position: absolute;
@@ -54,4 +26,12 @@ body{
   /* transition: 2s; */
 
   /* visibility: hidden; */
+}
+
+canvas{
+  position: absolute;
+  top: 125px;
+  left: 0px;
+  background-color: rgb(240, 240, 240);
+  
 }

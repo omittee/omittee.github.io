@@ -1,8 +1,9 @@
 
-const array = [7, 3, 5, 4, 2, 1, 9, 10, 8, 6, 11];
+const array = [3,6,1,9,3];
 let len = array.length, s;//s是当前索引号
 let numAndFake = [];//动态添加元素的数组
 let step = [];//保存每次交换步骤
+let dotpos = [];//保存每次画线点位置
 let numArr = [];//保存DOM对象
 let auto;//一个计时器
 
@@ -21,7 +22,8 @@ for (let i = 0; i < array.length; i++) {
 
 
 const fake = document.querySelectorAll('.fake');
-
+const canvas = document.querySelector('canvas');
+let ctx = canvas.getContext('2d');
 function origin() {
   for (let i = 0, move = 80, first = 30; i < array.length; i++) {
     numArr[i].style.left = first + i * move + "px";
@@ -29,11 +31,29 @@ function origin() {
   }
   for (let i = 0, width = 1000, hight = 100, head = 50, layer = 1; i < array.length; i++) {
     fake[i].style.top = head + layer * hight + "px";
-    fake[i].style.left = width * (i - Math.pow(2, layer - 1) + 2) / parseFloat(Math.pow(2, layer - 1) + 1) + "px";
+    fake[i].style.left = width * (i - Math.pow(2, layer - 1) + 2) / parseFloat(Math.pow(2, layer - 1) + 1) - 25 + "px";
     if (i == Math.pow(2, layer) - 2) {
       layer++;
     }
   }
+  ctx.beginPath();
+  ctx.clearRect(0, 0, 300, 150);
+  dotpos.length=0;//清空
+}
+
+function draw() {
+  ctx.strokeStyle = "green";
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.clearRect(0, 0, 300, 150);
+  for (let i = 0; i < dotpos.length; i += 4) {
+    ctx.moveTo(dotpos[i], dotpos[i + 1]);
+    ctx.lineTo(dotpos[i + 2], dotpos[i + 3]);
+  }
+  ctx.stroke();
+
 }
 
 const build = document.querySelector('.build');
@@ -56,27 +76,43 @@ build.addEventListener('click', function () {
   autoplay.disabled = true;
   let temp = 0, t = -1;//用来判断是否初始交换的索引号
   buildSwap = setInterval(function () {
-    animateSwap(numArr[temp], fake[temp], true);//真交换，入堆
-    if (temp > 0) {
-      t = parseInt((temp - 1) / 2);//t是temp的父代
-    }
-    if (t >= 0 && parseInt(numArr[t].innerText) < parseInt(numArr[temp].innerText)) {
-      numArr[t].style.borderColor = "gold";
-      numArr[temp].style.borderColor = "gold";
-      setTimeout(function () {
-        animateSwap(numArr[t], numArr[temp - 1], false);//初始假交换
-        numArr[t].style.borderColor = "green";
-        numArr[temp - 1].style.borderColor = "green"
-      }, 500)
-    }
-    if (temp == array.length - 1) {//结束入堆
-      clearInterval(buildSwap);
-      next.disabled = false;
-      init.disabled = false;
-      autoplay.disabled = false;
-      build.disabled = false;
-    }
-    temp++;
+    t=temp>0?parseInt((temp - 1) / 2):t;
+    animateSwap(numArr[temp], fake[temp], true,function(){
+      if(temp>0){
+        let k=(numArr[temp].offsetLeft + 25) * 3 / 10;
+        dotpos.push(k);
+        k=(numArr[temp].offsetTop - 100) * 3 / 10
+        dotpos.push(k);
+        k=(numArr[t].offsetLeft + 25) * 3 / 10
+        dotpos.push(k);
+        k=(numArr[t].offsetTop - 100) * 3 / 10
+        dotpos.push(k);
+        draw();
+        
+      }
+    });//真交换，入堆
+    
+    setTimeout(function(){
+      if (t >= 0 && parseInt(numArr[t].innerText) < parseInt(numArr[temp].innerText)) {
+        numArr[t].style.borderColor = "gold";
+        numArr[temp].style.borderColor = "gold";
+        setTimeout(function () {
+          animateSwap(numArr[t], numArr[temp - 1], false);//初始假交换
+          numArr[t].style.borderColor = "green";
+          numArr[temp - 1].style.borderColor = "green"
+        }, 500)
+      }
+      if (temp == array.length - 1) {//结束入堆
+        clearInterval(buildSwap);
+        next.disabled = false;
+        init.disabled = false;
+        autoplay.disabled = false;
+        build.disabled = false;
+      }
+      temp++;
+    },500);
+    
+    
   }, 1200);
 
 })
@@ -140,6 +176,9 @@ function reinit(flag = true) {//flag判断是否需要回到最初的起点以�
 reinit();
 
 pre.addEventListener("click", function () {
+  if (step.length == 0) {
+    return;
+  }
   pre.disabled = true;
   let tp1 = step[step.length - 1];
   step.pop();
@@ -154,13 +193,18 @@ pre.addEventListener("click", function () {
   if (tp1 == 0 && tp2 > 2 || tp2 == 0 && tp1 > 2) {
     len++;
   }
-  if(tp1<=0&&tp2<=0&&tp1==tp2){
-    animateSwap(numArr[-tp1], fake[-tp2], true);
+  if (tp1 <= 0 && tp2 <= 0 && tp1 == tp2) {
+    tp1 = -tp1;
+    tp2 = -tp2;
+    animateSwap(numArr[tp1], fake[tp2], true);
+    setTimeout(function () {
+      pre.click();//再调用一次
+    }, 1101);
   }
-  else{
+  else {
     animateSwap(numArr[tp1], numArr[tp2], false);
   }
-  
+
   numArr[tp1].style.borderColor = "gold";
   numArr[tp2].style.borderColor = "gold";
   numArr[tp1].style.backgroundColor = "green";
@@ -191,32 +235,32 @@ next.addEventListener("click", function () {
     next.addEventListener("click", topToBottom(fake), false);
     next.removeEventListener("click", topToBottom, false);
     function topToBottom(fake) {
-
       setTimeout(function () {
-        if(len>1){
+        if (len > 1) {
           animateSwap(numArr[0], numArr[--len], false);
+          step[step.length] = 0;
+          step[step.length] = len;
         }
-        else if(len==1){
+        else if (len == 1) {
           len--;
         }
-        else{
+        else {
           return;
         }
-        step[step.length] = 0;
-        step[step.length] = len;
+
 
         setTimeout(function () {
-        
+
           numArr[len].style.backgroundColor = "lightgreen";
           numArr[len].style.borderColor = "lightgreen";
           animateSwap(fake[len], numArr[len], true);
           step[step.length++] = -len;
           step[step.length++] = -len;
-          
+
         }, 700);
       }, 500);
 
-      
+
     }
     s = Math.floor(len / 2) - 1;
   }
@@ -325,7 +369,7 @@ function animateSwap(obj1, obj2, flag, callback) {
   }
 
 }
-/* 
+/*
 function animateSwap(obj1, obj2, flag, callback) {
   const runkeyframes =` @keyframes ball-run{
     to{
